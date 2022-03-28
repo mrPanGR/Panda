@@ -1,0 +1,36 @@
+:root{
+  --header : 0.625rem;  
+  --content : 0.875rem;
+  --title : 1.125rem;
+  --marginMax :1.25rem; /*20px*/
+  --marginMin :0.625rem; /*10px*/
+  --navitem :2.5rem;
+  --navheight: 4.375rem;
+  /* 10px = 0.625rem
+  12px = 0.75rem
+  14px = 0.875rem
+  16px = 1rem (base)
+  18px = 1.125rem
+  20px = 1.25rem
+  24px = 1.5rem
+  30px = 1.875rem
+  32px = 2rem */
+
+  /* --el-date-editor-daterange-width : 180px */
+}
+
+.border_shadow{
+  border: groove 1px solid #000000;
+  box-shadow: .5px .5px 1px #000000,
+  1px 1px 1px #000000,
+  1.5px 1.5px 1px #000000,
+  2px 2px 1px #000000,
+  2.5px 2.5px 1px #000000,
+  3px 3px 1px #000000;
+  background-color: #ffffff;
+}
+
+
+
+
+

@@ -1,0 +1,16 @@
+html,body,h1,h2,h3,h4,h5,h6,hr,p,iframe,dl,dt,dd,ul,ol,li,pre,form,button,input,textarea,th,td,fieldset{margin:0;padding:0}
+ul,ol,dl{list-style-type:none}
+html,body{*position:static}
+input{outline: none;}
+
+body{
+  margin: 0 auto !important;
+  padding: 0;
+  min-width: 320px;
+  max-width: 540px;
+  font-family: "Roboto_Regular";
+}
+@font-face {
+  font-family: "Roboto_Regular";
+  src: url("../font/RobotoJ-Regular-2.otf") format("OpenType")
+}
