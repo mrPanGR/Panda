@@ -4,6 +4,7 @@
       <router-view/>
     </div>
     <navbar v-show="$store.state.barshow"></navbar>
+	<!-- 第一次git提交测试 -->
   </div>  
 </template>
 
