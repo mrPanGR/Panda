@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import {parsejson,stringifyjson} from '@/assets/js/static.js'
+import {localStorageSelect,localStorageUpload} from '@/assets/js/static.js'
 import {Popup,Picker,Toast } from 'vant'
 export default {
   name:'timeclass',
@@ -51,7 +51,7 @@ export default {
       thistimeclasslist:[],
       weeklist:[],
       whatweek:0,      
-      schoolOpeningTime: new Date(parsejson(localStorage.getItem("userinfo")).schoolOpeningTime),
+      schoolOpeningTime: new Date(localStorageSelect("userinfo").schoolOpeningTime),
       barshow:false,
     }
   },
@@ -144,8 +144,8 @@ export default {
       Toast(val)
     },
     getclasslist(){
-      let classlist = parsejson(localStorage.getItem("classlist"))
-      let timeclasslist = parsejson(localStorage.getItem("timeclasslist"))
+      let classlist = localStorageSelect("classlist")
+      let timeclasslist = localStorageSelect("timeclasslist")
       for (let i in timeclasslist){
         for(let item in classlist){
           if(timeclasslist[i].cid == classlist[item].cid){

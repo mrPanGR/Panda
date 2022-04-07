@@ -12,12 +12,12 @@
 
 <script>
 
-import {parsejson} from '@/assets/js/static.js'
+import {localStorageSelect} from '@/assets/js/static.js'
 import navbaritem from './navbaritem.vue'
 export default {
   data(){
     return{
-      navlist:parsejson(localStorage.getItem('navlist')),
+      navlist:localStorageSelect('navlist'),
       active_name:""
     }    
   },

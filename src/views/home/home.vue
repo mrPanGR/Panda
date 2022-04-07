@@ -8,16 +8,16 @@
 
 <script>
 import todolistbar from '@/components/common/todolistbar/todolistbar.vue'
-import { parsejson } from '@/assets/js/static.js'
+import { localStorageSelect } from '@/assets/js/static.js'
+import { ref } from '@vue/reactivity'
 export default {
   name:'home',
-  data(){
-    return{
-      todolist:parsejson(localStorage.getItem("todolist"))
-    }
-  },
   components:{
     todolistbar
+  },
+  setup(){
+    let todolist = ref(localStorageSelect("todolist"))
+    return{todolist}
   }
 }
 </script>

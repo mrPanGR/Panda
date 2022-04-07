@@ -83,9 +83,22 @@ export const timeclasslist =[
   {id:25,numbered:3,week:6,starweek:1,endweek:4,cid:5,classroom:" "},
   {id:26,numbered:4,week:6,starweek:1,endweek:4,cid:5,classroom:" "},
 ]
-export function parsejson(value){
+function parsejson(value){
   return JSON.parse(value)
 }
-export function stringifyjson(value){
+function stringifyjson(value){
   return JSON.stringify(value)
+}
+export function localStorageUpload(name,data){
+  localStorage.setItem(name, stringifyjson(data))
+}
+export function localStorageSelect(name){
+  return parsejson(localStorage.getItem(name))
+}
+
+export function hasNavthisHeight(){
+  return document.documentElement.clientHeight / 16 - 4.375 - 0.625 +"rem"
+}
+export function notNavthisHeight(){
+  return document.documentElement.clientHeight / 16 +"rem"
 }

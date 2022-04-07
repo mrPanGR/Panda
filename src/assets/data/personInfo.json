@@ -1,0 +1,14 @@
+{
+  "data":{
+    "nickname":"Hua",
+    "age":22,
+    "sex":0,
+    "constellation":"狮子座",
+    "school":"玉林师范学院",
+    "portrait":"https://tse4-mm.cn.bing.net/th/id/OIP-C.Qs194pnyMilbvmlB2pQUXQAAAA?w=186&h=186&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+    "is_class":false,
+    "phone":"admin",
+    "password":"admin",
+    "schoolOpeningTime" : "2022/2/28"
+  }
+}

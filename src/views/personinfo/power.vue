@@ -1,5 +1,5 @@
 <template>
-  <div class="power" :style="{height:getthisheight}">
+  <div class="power" :style="{height:thisHeight}">
     <backbar title="功能设置" @back='back'/>
     <van-cell-group title="导航设置">
       <template  v-for="i in navlist" :key="i.id">
@@ -27,35 +27,34 @@
 <script>
 import backbar from '@/components/common/backbar/backbar.vue'
 import {CellGroup,Cell,Switch } from 'vant'
-import {parsejson,stringifyjson} from '@/assets/js/static.js'
+import {localStorageSelect,localStorageUpload,notNavthisHeight} from '@/assets/js/static.js'
+import {reactive} from 'vue'
+import { useRouter } from 'vue-router'
 export default {
   name:'power',
-  data(){
-    return{
-      color:"#000",
-      navlist:parsejson(localStorage.getItem('navlist')),
-      classlist:parsejson(localStorage.getItem('classlist')),
-    }
-  },
-  methods:{
-    back(){
-      // console.log(navlist)
-      localStorage.setItem('navlist',stringifyjson(this.navlist))
-      localStorage.setItem('classlist',stringifyjson(this.classlist))
-      this.$router.push('/personinfo')
-    }
-  },
   components:{  
     backbar,
     [CellGroup.name]:CellGroup,
     [Cell.name]:Cell,
     [Switch.name]:Switch
   },
-  computed:{
-    getthisheight(){
-      return document.documentElement.clientHeight / 16 +"rem"
-    },
-  }
+  setup(){
+    let router = useRouter()
+    let thisHeight = notNavthisHeight();
+    let navlist = reactive(localStorageSelect('navlist'))
+    let classlist = reactive(localStorageSelect('classlist'))
+    let back = ()=>{
+      localStorageUpload('navlist',navlist)
+      localStorageUpload('classlist',classlist)
+      router.push('/personinfo')
+    }
+    return{
+      thisHeight,
+      navlist,
+      classlist,
+      back
+    }
+  },
 }
 </script>
 

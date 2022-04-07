@@ -1,5 +1,5 @@
 <template>
-  <div class="page_personinfo" :style="{height:thisHeight}">
+  <div class="page_personinfo" :style="{height:thisheight}">
     <div class="info border_shadow">
       <div class="portrait border_shadow" :style="{backgroundImage:'url('+info.portrait+')'}"></div>      
       <div class="info_text">
@@ -27,55 +27,53 @@
 
 <script>
 import Pswitch from "@/components/common/Pswitch/Pswitch.vue"
-// import {personinfo} from "@/assets/js/static.js"
+import {localStorageSelect,hasNavthisHeight} from "@/assets/js/static.js"
 import {Icon } from 'vant'
+import {reactive,computed} from 'vue'
+import { useRouter } from 'vue-router'
 export default {
   name:'personinfo',
-  data(){
-    return {
-      info:"",
-    }
-  },
-  computed:{
-    sex(){
-      let sex = this.info.sex == 0 ? "女" : "男"
-      return sex
-    },
-    thisHeight(){
-      return document.documentElement.clientHeight / 16 - 4.375 - 0.625 +"rem"
-    }
-  },
   components:{
     Pswitch,
     [Icon.name]:Icon
-  },
-  methods:{
-    getChildMsg(val){
-      this.info.is_class = val
-    },
-    getpersoninfo(){
-      console.log()
-      this.info = JSON.parse(localStorage.getItem("userinfo"))
-    },
-    toInfoSetup(){
-      this.$router.push("/infosetup")
-    },
-    outsignin(){
+  },  
+  setup(){
+    let router = useRouter();
+    let info = reactive(localStorageSelect("userinfo"))
+    let thisheight = hasNavthisHeight() //  这里可以用hook函数 试一下（现在没时间不想改了 2022/4/4 21:36）
+    let getChildMsg = (val) => {
+      info.is_class = val
+    }
+    let toInfoSetup = ()=> {
+      router.push("/infosetup")
+    }
+    let outsignin = () => {
       localStorage.removeItem("userinfo");
       localStorage.removeItem("navlist");
       localStorage.removeItem("classlist");
       localStorage.removeItem("timeclasslist");
       localStorage.removeItem("todolist");
-      this.$router.push("/login")
-    },
-    powerpage(){
-      this.$router.push('/power')
+      router.push("/login")
     }
-  },
-  created(){
-    this.getpersoninfo()
-  },
-  
+    let powerpage =() => {
+      router.push('/power')
+    }
+
+    //#region  computed
+    let sex = computed(()=>{
+      return info.sex == 0 ? "女" : "男"
+    })
+    //#endregion
+    return {
+      info,
+      thisheight,
+      getChildMsg,
+      toInfoSetup,
+      outsignin,
+      powerpage,
+      sex
+    }
+  }
 }
 </script>
 

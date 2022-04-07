@@ -11,8 +11,8 @@
         :show-word-limit="nicknamefontshow" 
         :error-message="thisinfo.nickname == '' ? '不可为空':''"
         error-message-align="right"
-        @focus="nicknameonfocus()"
-        @blur="nicknameonblur()"/>
+        @focus="nicknamefontshow = !nicknamefontshow"
+        @blur="nicknamefontshow = !nicknamefontshow"/>
       <!-- 年龄 --><!-- 允许输入正整数，调起纯数字键盘 -->
       <van-field 
         v-model="thisinfo.age" 
@@ -23,18 +23,18 @@
         :show-word-limit="agefontshow" 
         :error-message="thisinfo.age == '' ? '不可为空':''"
         error-message-align="right"
-        @focus="ageonfocus()"
-        @blur="ageonblur()"/>
+        @focus="agefontshow = !agefontshow"
+        @blur="agefontshow = !agefontshow"/>
       <!-- 性别 -->
-      <van-cell title="性别" :value="sex" @click="sexcheck()"/>
+      <van-cell title="性别" :value="thisinfo.sex? '男':'女'" @click="sexshow = !sexshow"/>
       <!-- <van-field v-model="thisinfo.sex" label="性别" input-align="right" />       -->
       <!-- 星座 -->
-      <van-cell title="星座" :value="thisinfo.constellation" @click="constellationcheck()" />
+      <van-cell title="星座" :value="thisinfo.constellation" @click="constellationshow = !constellationshow" />
       <!-- <van-field v-model="thisinfo.constellation" label="星座" input-align="right"/> -->
       <!-- 学校 -->
       <van-field v-model="thisinfo.school" label="学校" input-align="right" :error-message="thisinfo.school == '' ? '不可为空':''" error-message-align="right"/>
       <!-- 开学时间 -->
-      <van-cell :value="schoolOpeningTime_str"  title="开学时间" @click="schoolOpeningTimecheck()"/>
+      <van-cell :value="schoolOpeningTime_str"  title="开学时间" @click="schoolOpeningTimeshow = !schoolOpeningTimeshow"/>
       
     </van-cell-group>
     <div class="submit" :style="{background:submitbg? '#91CFFD':'#CFCFCF',pointerEvents: submitbg ? 'auto':'none'}" @click="submit()" >
@@ -42,35 +42,38 @@
     </div>
     <van-popup style="height:30%;" 
       v-model:show="sexshow" 
-      round="true"
+      :round="true"
       position="bottom">
       <van-picker 
         title="" 
         :columns="sexlist" 
         visible-item-count="3"
         @confirm="sexconfirm"
+        @cancel="sexshow = false"
         />
     </van-popup>
     <van-popup style="height:50%;" 
       v-model:show="constellationshow" 
-      round="true"
+      :round="true"
       position="bottom">
       <van-picker 
         title="" 
         :columns="constellationlist" 
         visible-item-count="6"
         @confirm="constellationconfirm"
-        @cancel="constellationcancel"
+        @cancel="constellationshow = false"
         />
     </van-popup>
     <van-popup style="height:50%;" 
       v-model:show="schoolOpeningTimeshow" 
-      round="true"
+      :round="true"
       position="bottom">
       <van-datetime-picker
         v-model="schoolOpeningTime"
         type="date"
-        title="选择年月日"        
+        title="选择年月日"
+        @confirm="upshoolOpeningTime"
+        @cancel="schoolOpeningTimeshow = false"        
       />
     </van-popup>
   </div>
@@ -79,105 +82,11 @@
 <script>
 import backbar from "@/components/common/backbar/backbar.vue"
 import {Field, CellGroup,Cell,Popup,Picker,Toast,DatetimePicker  } from 'vant'
-import {parsejson,stringifyjson} from '@/assets/js/static.js'
+import {localStorageUpload,localStorageSelect,notNavthisHeight} from '@/assets/js/static.js'
+import {ref,reactive, computed} from 'vue'
+import { useRouter } from 'vue-router'
 export default {
-  data(){
-    return{
-      thisHeight:'',
-      thisinfo:parsejson(localStorage.getItem("userinfo")),
-      agefontshow:false,
-      nicknamefontshow:false,
-      sexshow:false,
-      sexlist:["男","女"],
-      constellationshow:false,
-      constellationlist:["摩羯座","水瓶座","双鱼座","白羊座","金牛座","双子座","巨蟹座","狮子座","处女座","天秤座","天蝎座","射手座"],
-      schoolOpeningTimeshow:false
-    }
-  },
-  methods:{
-    getthisheight(){
-      this.thisHeight = document.documentElement.clientHeight / 16 +"rem"
-    },
-    ageonfocus(){
-      this.agefontshow = true
-    },
-    ageonblur(){
-      if(this.thisinfo.age == ""){
-        
-      }
-      this.agefontshow = false
-    },
-    nicknameonfocus(){
-      this.nicknamefontshow = true
-    },
-    nicknameonblur(){
-      if(this.thisinfo.nickname == ""){        
-        
-      }
-      this.nicknamefontshow = false
-    },
-    sexcheck(){      
-      this.sexshow = !this.sexshow
-    },
-    sexconfirm(value){
-      this.thisinfo.sex = value == "男" ? 1:0
-      this.sexshow = !this.sexshow
-    },
-    sexcancel(){
-      this.sexshow = !this.sexshow
-    },
-    constellationcheck(){
-      this.constellationshow = !this.constellationshow
-    },
-    constellationconfirm(value){
-      this.thisinfo.constellation = value
-      this.constellationshow = !this.constellationshow
-    },
-    constellationcancel(){
-      this.constellationshow = !this.constellationshow
-    },
-    back(){
-      this.$router.push("/personinfo")
-    },
-    schoolOpeningTimecheck(){
-      this.schoolOpeningTimeshow = !this.schoolOpeningTimeshow
-    },
-    submit(){
-      localStorage.setItem("userinfo",stringifyjson(this.thisinfo))
-      Toast("修改成功了窝")
-    }
-  },
-  computed:{
-    schoolOpeningTime_str(){
-      let time = new Date(this.thisinfo.schoolOpeningTime)
-     
-      return  time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDate()
-    },
-    schoolOpeningTime(){
-      let time = new Date(this.thisinfo.schoolOpeningTime)     
-      return  time
-    },
-    sex(){
-      return this.thisinfo.sex? "男":"女"      
-    },
-    submitbg(){
-      let info = parsejson(localStorage.getItem("userinfo"))
-      if(this.thisinfo.nickname == '' &&this.thisinfo.age == '' &&this.thisinfo.shool == ''){
-        return false
-      }else if(this.thisinfo.nickname == info.nickname 
-                &&this.thisinfo.age == info.age 
-                &&this.thisinfo.shool == info.shool
-                &&this.thisinfo.sex == info.sex
-                &&this.thisinfo.constellation == info.constellation
-                &&this.thisinfo.schoolOpeningTime == info.schoolOpeningTime
-                )
-      {
-        return false
-      }else{
-        return true
-      }
-    }
-  },
+  name:'infose',
   components:{
     backbar,
     [Field.name]:Field,
@@ -187,9 +96,83 @@ export default {
     [Picker.name]:Picker,
     [DatetimePicker.name]:DatetimePicker
   },
-  created(){
-    this.getthisheight()
-  }
+  setup(){
+    let router = useRouter() //路由
+    let sexlist =['男','女']
+    let thisHeight = notNavthisHeight();
+    let thisinfo = reactive(localStorageSelect("userinfo"))
+    let agefontshow = ref(false)
+    let nicknamefontshow =ref(false)
+    let sexshow=ref(false)
+    let constellationshow=ref(false)
+    let schoolOpeningTimeshow=ref(false)
+    let schoolOpeningTime = ref(new Date(thisinfo.schoolOpeningTime))
+    let constellationlist = ["摩羯座","水瓶座","双鱼座","白羊座","金牛座","双子座","巨蟹座","狮子座","处女座","天秤座","天蝎座","射手座"]
+
+    let sexconfirm = (value) =>{
+      thisinfo.sex = value == "男" ? 1:0
+      sexshow.value = false
+    };
+    let constellationconfirm = (value)=>{
+      thisinfo.constellation = value
+      constellationshow.value = false
+    }
+    let upshoolOpeningTime = ()=>{
+      thisinfo.schoolOpeningTime = schoolOpeningTime.value;
+      schoolOpeningTimeshow.value = false
+    }
+    let back = ()=>{
+      router.push("/personinfo")
+    }
+    let submit = () =>{
+      localStorageUpload("userinfo",thisinfo)
+      Toast("修改成功了窝")
+    }
+    let schoolOpeningTime_str = computed(()=>{
+      let time = new Date(thisinfo.schoolOpeningTime)     
+      return  time.getFullYear()+"/"+(time.getMonth()+1)+"/"+time.getDate()
+    })
+    let submitbg = computed(()=>{
+      //获取未修改前的数据
+      let info = localStorageSelect("userinfo")
+      //判断是否修改 或 是否为空
+      if(thisinfo.nickname == '' &&thisinfo.age == '' &&thisinfo.shool == ''){
+        return false
+      }else if(thisinfo.nickname == info.nickname 
+                &&thisinfo.age == info.age 
+                &&thisinfo.shool == info.shool
+                &&thisinfo.sex == info.sex
+                &&thisinfo.constellation == info.constellation
+                &&thisinfo.schoolOpeningTime == info.schoolOpeningTime
+                )
+      {
+        return false
+      }else{
+        return true
+      }
+    })
+
+    return{
+      sexlist,
+      thisHeight,
+      thisinfo,
+      agefontshow,
+      nicknamefontshow,
+      sexshow,
+      constellationshow,
+      schoolOpeningTimeshow,
+      constellationlist,
+      schoolOpeningTime,
+      sexconfirm,
+      constellationconfirm,
+      upshoolOpeningTime,
+      back,
+      submit,
+      schoolOpeningTime_str,
+      submitbg,
+    }
+  },
+  
 }
 </script>
 

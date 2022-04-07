@@ -28,8 +28,6 @@ const router = createRouter({
   routes
 })
 router.beforeEach((to,from,next)=>{
-  console.log(to,"to")
-  console.log(from,"from")
   if(to.name =="login"){
     next();
   }else if(to.name == 'index'){

@@ -5,7 +5,7 @@
     <div class="todolist_header">
       <template v-if="size == 'max'">        
         <span>记录你美好的一天</span>
-        <span>{{completed}}/{{todolist.length}}</span>
+        <!-- <span>{{completed}}/{{todolist.length}}</span> -->
       </template>
       <template v-else>        
         <span>今日事今日毕哦！！</span>
@@ -38,54 +38,49 @@
       </template>
          
     </div>
-    <!-- <div>{{filterTodolist}}</div> -->
   </div>
 </template>
 
 <script>
-import {stringifyjson} from '@/assets/js/static.js'
 import todolistbaritem from './todolistbaritem.vue'
+import store from '@/store'
+import { computed } from '@vue/runtime-core'
 export default {
   name:'todalist',
-  data(){
-    return{
-      // todolist:todolist
+  components:{
+    todolistbaritem
+  },  
+  props:["size"],
+  setup(props){
+    //#region  data
+    let todolist = store.state.todolist;
+    //#endregion
+    let del = (val)=>{
+      store.dispatch("todoliststate",{id:val,state:3})
     }
-  },
-  props:["size","todolist"],
-  methods:{
-    del(val){  
-      this.todolist.forEach(x => {
-        if(x.id == val){
-          x.state = 3
-        }
-      });
-      localStorage.setItem("todolist",stringifyjson(this.todolist))
-    },    
-    complete(val){
-      // console.log(this.todolist)
-      this.todolist.forEach((x) => {
-        if(x.id == val){
-          x.state = 1
-        }
-      });
-      localStorage.setItem("todolist",stringifyjson(this.todolist))
-    },
-    
-  },
-  computed:{
-    filterTodolist(){      
-      if(this.todolist){
-        if(this.size == "min"){
+    let complete = (val)=>{
+      store.dispatch("todoliststate",{id:val,state:1})
+    }
+    //#region computed
+    let completed = computed(()=>{
+      if(todolist){
+        return todolist.filter(x=>{
+          return x.state == 0
+        }).length
+      }       
+    })
+    let filterTodolist = computed(() => {      
+      if(todolist){
+        if(props.size == "min"){
           let time = new Date()
-          return this.todolist.filter((val)=>{          
+          return todolist.filter((val)=>{          
             return val.state == 0 
           }).splice(0,3).sort((a,b)=>{
             return new Date(time.getFullYear()+"/"+time.getMonth()+"/"+time.getDate()+" "+ a.startime) > new Date(time.getFullYear()+"/"+time.getMonth()+"/"+time.getDate()+" "+ b.startime) ? -1 : 1
           })
         }else{
           let time = new Date()
-          return this.todolist.sort((a,b)=>{
+          return todolist.sort((a,b)=>{
             if(a.state == b.state){
               return new Date(time.getFullYear()+"/"+time.getMonth()+"/"+time.getDate()+" "+ a.startime) < new Date(time.getFullYear()+"/"+time.getMonth()+"/"+time.getDate()+" "+ b.startime) ? -1 : 1
             }else{
@@ -98,19 +93,22 @@ export default {
         return []
       }
       
-    },
-    completed(){
-       return this.todolist.filter(x=>{
-        return x.state == 0
-      }).length
-    },
+    })
+    //#endregion
+
+    return {
+      todolist,
+      del,
+      complete,
+      completed,
+      filterTodolist
+    }
+  },
+  computed:{
+    
+    
     
   },
-  created(){
-  },
-  components:{
-    todolistbaritem
-  }
 }
 </script>
 
