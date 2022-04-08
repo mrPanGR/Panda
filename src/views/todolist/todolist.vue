@@ -60,10 +60,10 @@
 </template>
 
 <script>
-import Tbar from "@/components/common/Timebar/Timebar";
+import Tbar from "@/components/common/timebar/timebar";
 import todolistbar from "@/components/common/todolistbar/todolistbar.vue";
 import { Toast } from "vant";
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref,getCurrentInstance } from "vue";
 import store from "@/store";
 export default {
   name: "todolist",
@@ -72,12 +72,13 @@ export default {
     Tbar,
   },
   setup() {
+    let {proxy} = getCurrentInstance()
     //#region data数据
     let inittodolist = reactive({
       id: 0,
-      startime: new Date().getHours() + ":" + new Date().getMinutes(), //这里有问题
+      startime: proxy.$moment().format("HH:mm"),
       startitle: "开始时间",
-      endtime: new Date().getHours() + ":" + new Date().getMinutes(), //这里跟上面一样的问题
+      endtime: proxy.$moment().format("HH:mm"),
       endtitle: "结束时间",
       content: "",
       commonly: false,
@@ -109,9 +110,10 @@ export default {
         inittodolist.id++;
         let {id,startime,endtime,content,commonly,state} = inittodolist
         store.dispatch("todolistadd",{id,startime,endtime,content,commonly,state})
-        inittodolist.startime = new Date().getHours() + ":" + new Date().getMinutes(),
+        //以下时初始化inittodolist对象
+        inittodolist.startime = proxy.$moment().format("HH:mm"),
         inittodolist.startitle = "开始时间",
-        inittodolist.endtime = new Date().getHours() + ":" + new Date().getMinutes(),
+        inittodolist.endtime = proxy.$moment().format("HH:mm"),
         inittodolist.endtitle = "结束时间",
         inittodolist.content = "";
         inittodolist.commonly = false;

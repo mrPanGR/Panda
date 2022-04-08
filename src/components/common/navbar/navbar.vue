@@ -14,38 +14,33 @@
 
 import {localStorageSelect} from '@/assets/js/static.js'
 import navbaritem from './navbaritem.vue'
+import {ref} from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 export default {
-  data(){
-    return{
-      navlist:localStorageSelect('navlist'),
-      active_name:""
-    }    
-  },
-  props:{
-
-  },
-  methods:{
-    activeItem(activename){
-      // this.active = !this.active
-      this.active_name = activename
-      for (let i of this.navlist) {
-        if(i.name == activename){
-          this.$router.push(i.path)
-        }
-      }
-      // this.navlist.filter((x)=>{
-      //   x.name == activename ? this.$router.push(x.path) : ''
-      // })
-      
-    }
-  },
+  name:"navbar",
   components:{
     navbaritem
   },
-  created(){
-    // console.log(this.$route)
-    this.activeItem(this.$route.name)
-  }
+  setup(){
+    let router = useRouter()
+    let route = useRoute()
+    let navlist = ref(localStorageSelect('navlist'))
+    let active_name = ref("")
+    let activeItem = (name) =>{
+      active_name.value = name
+      for (let i of navlist.value) {
+        if(i.name == name){
+          router.push(i.path)
+        }
+      }      
+    }
+    activeItem(route.name)
+    return{
+      navlist,
+      active_name,
+      activeItem,
+    }
+  },
 }
 </script>
 

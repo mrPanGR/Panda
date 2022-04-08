@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import Pswitch from "@/components/common/Pswitch/Pswitch.vue"
 import {localStorageSelect,hasNavthisHeight} from "@/assets/js/static.js"
 import {Icon } from 'vant'
 import {reactive,computed} from 'vue'
@@ -34,7 +33,6 @@ import { useRouter } from 'vue-router'
 export default {
   name:'personinfo',
   components:{
-    Pswitch,
     [Icon.name]:Icon
   },  
   setup(){

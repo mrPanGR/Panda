@@ -9,16 +9,7 @@
 <script>
 import {Icon} from 'vant'
 export default {
-  data(){
-    return{
-      
-    }
-  },
-  methods:{
-   back(){
-     this.$emit("back")
-   }
-  },
+  name:"backbar",
   props:{
     title:{
       type:String,
@@ -29,7 +20,16 @@ export default {
   },
   components:{
     [Icon.name]:Icon,
-  }
+  },
+  emits:["back"],
+  setup(props, content){    
+    let back = () => {
+      content.emit("back")
+    }
+    return{
+      back
+    }
+  },  
 }
 </script>
 
